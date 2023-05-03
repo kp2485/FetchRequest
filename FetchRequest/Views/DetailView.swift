@@ -10,7 +10,7 @@ import SwiftUI
 struct DetailView: View {
     
     @StateObject var vm = DetailViewModel()
-
+    
     var id: String
     
     var body: some View {
@@ -27,48 +27,96 @@ struct DetailView: View {
                         }
                     }
             } else {
-                recipe
+                recipeView
             }
             Spacer()
         }
     }
     
-    var recipe: some View {
+    var recipeView: some View {
         VStack {
             Text(vm.meals?[0].name ?? "Default Name")
                 .font(.title)
                 .bold()
             Group {
-                AsyncImage(url: URL(string: (vm.meals?[0].imageLocation)!)) { image in
-                    image
-                        .resizable()
-                        .scaledToFit()
-                        .padding(.horizontal, 30)
-                } placeholder: {
-                    LoadingView()
-                }
-
-                Text("Category: \((vm.meals?[0].category!.rawValue) ?? "Unknown")")
+                
+                imageView
+                
                 Text("Nationality: \(vm.meals?[0].area ?? "Unknown")")
-                Text("Ingredients")
-                    .font(.title2)
-                    .underline()
                 
-                ForEach(ingredients, id: \.self) { ingredientRow in
-                    HStack {
-                        Text(ingredientRow.measure)
-                        Text(ingredientRow.ingredient)
-                    }
+                HStack {
+                    Text("Ingredients:")
+                        .font(.title2)
+                        .underline()
+                        .padding(.leading, 30)
+                    Spacer()
                 }
                 
+                ingredientsView
+                    .padding(.leading, 30)
+                
+                HStack {
+                    Text("Directions:")
+                        .font(.title2)
+                        .underline()
+                        .padding(.leading, 30)
+                    Spacer()
+                }
+                HStack {
+                    Text(vm.meals?[0].instructions ?? "No instructions given.")
+                    Spacer()
+                }
+                .padding(.leading, 30)
             }
             .padding(1)
         }
     }
     
-    struct IngredientRow: Hashable {
-        let ingredient: String
-        let measure: String
+    var imageView: some View {
+        ZStack {
+            AsyncImage(url: URL(string: (vm.meals?[0].imageLocation)!)) { image in
+                image
+                    .resizable()
+                    .scaledToFit()
+                    .padding(.horizontal, 30)
+            } placeholder: {
+                LoadingView()
+            }
+            
+            VStack {
+                Spacer()
+                HStack {
+                    Spacer()
+                    ZStack {
+                        Text("\((vm.meals?[0].category!.rawValue) ?? "No Category")")
+                            .font(.title)
+                            .italic()
+                            .bold()
+                            .padding(.trailing, 40)
+                        Text("\((vm.meals?[0].category!.rawValue) ?? "No Category")")
+                            .font(.title)
+                            .italic()
+                            .bold()
+                            .foregroundColor(.secondary)
+                            .offset(x: 2, y: 2)
+                            .padding(.trailing, 40)
+                    }
+                }
+            }
+        }
+    }
+    
+    var ingredientsView: some View {
+        ForEach(ingredients, id: \.self) { ingredientRow in
+            if ingredientRow != IngredientRow(ingredient: "", measure: "") {
+                HStack {
+                    Text(ingredientRow.measure)
+                        .frame(minWidth: 80)
+                    Text(ingredientRow.ingredient)
+                    Spacer()
+                }
+            }
+        }
     }
     
     var ingredients: [IngredientRow] {

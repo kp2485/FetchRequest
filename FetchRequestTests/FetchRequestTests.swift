@@ -29,5 +29,4 @@ final class FetchRequestTests: XCTestCase {
             XCTAssertEqual(vm.meals![0].name, "Apam balik")
         }
     }
-    
 }

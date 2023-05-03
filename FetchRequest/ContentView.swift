@@ -8,14 +8,41 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @StateObject var vm = CategoryViewModel()
+
     var body: some View {
+        
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundColor(.accentColor)
-            Text("Hello, world!")
+            
+            Menu {
+                Picker("Choose a meal category:", selection: $vm.selectedCategory) {
+                    ForEach(MealCategory.allCases, id: \.self) { category in
+                        Text("\(category.rawValue)")
+                            .tag(category)
+                    }
+                }
+            } label: {
+                Text("\(vm.selectedCategory.rawValue) Dishes")
+                    .font(.largeTitle)
+            }
+            
+            if vm.meals == nil {
+                ProgressView()
+                    .onAppear {
+                        Task {
+                            do {
+                                try await vm.getMealsByCategory()
+                            } catch {
+                                print("Error loading category")
+                            }
+                        }
+                    }
+            } else {
+                CategoryView(vm: vm)
+            }
+            Spacer()
         }
-        .padding()
     }
 }
 

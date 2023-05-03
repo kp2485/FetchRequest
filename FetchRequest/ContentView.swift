@@ -43,6 +43,7 @@ struct ContentView: View {
             }
             Spacer()
         }
+        .edgesIgnoringSafeArea(.all)
     }
 }
 

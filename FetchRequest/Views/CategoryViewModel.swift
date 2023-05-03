@@ -23,8 +23,8 @@ class CategoryViewModel: ObservableObject {
         }
     }
     
-    public var testMeals = [
-        Meal(id: "12345", name: "Test Meal", imageLocation: "no image")
+    public var errorMeals: [Meal] = [
+        
     ]
     
     func getMealsByCategory() async throws {
@@ -36,10 +36,9 @@ class CategoryViewModel: ObservableObject {
         
         guard (response as? HTTPURLResponse)?.statusCode == 200 else { fatalError("Error fetching data") }
         
-        // filter \ out of data
-        var dataString: String = String(decoding: data, as: UTF8.self)
-        let string2 = dataString.utf8DecodedString()
-        var filteredDataString = dataString.replacingOccurrences(of: "\\/", with: "/")
+        let dataString: String = String(decoding: data, as: UTF8.self)
+        
+        let filteredDataString = dataString.replacingOccurrences(of: "\\/", with: "/")
         
         guard let filteredData = filteredDataString.data(using: .utf8) else { fatalError("Error converting string back to data") }
         

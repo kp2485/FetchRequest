@@ -12,9 +12,15 @@ struct CategoryView: View {
     @ObservedObject var vm: CategoryViewModel
     
     var body: some View {
-        List {
-            ForEach(vm.meals ?? vm.testMeals) { meal in
-                Text(meal.name)
+        NavigationStack {
+            List {
+                ForEach(vm.meals ?? vm.errorMeals) { meal in
+                    NavigationLink {
+                        DetailView(id: meal.id)
+                    } label: {
+                        Text(meal.name)
+                    }
+                }
             }
         }
     }
